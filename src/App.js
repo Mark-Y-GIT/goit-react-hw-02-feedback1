@@ -3,6 +3,7 @@ import './App.css';
 import FeedbackOptions from './components/FeedbackOptions';
 import Section from './components/Section/Section';
 import Statistics from './components/Statistics';
+import Notification from './components/Notification';
 
 class App extends Component {
   state = {
@@ -12,7 +13,8 @@ class App extends Component {
   };
 
   handleClick = event => {
-    const name = event.currentTarget.name;
+    const name = event.currentTarget.name.toLowerCase();
+
     this.setState(prevState => {
       return { [name]: prevState[name] + 1 };
     });
@@ -35,19 +37,25 @@ class App extends Component {
     const { good, neutral, bad } = this.state;
     const { countPositiveFeedbackPercentage, countTotalFeedback } = this;
     return (
-      <div>
+      <div className="wraper">
         <Section title="Please leave a feedback">
           <FeedbackOptions
-            options={['good', 'neutral', 'bad']}
+            options={['Good', 'Neutral', 'Bad']}
             onLeaveFeedback={this.handleClick}
           />
-          <Statistics
-            good={good}
-            neutral={neutral}
-            bad={bad}
-            total={countTotalFeedback}
-            positivePercentage={countPositiveFeedbackPercentage}
-          />
+          <Section title="Statistics">
+            {good > 0 || neutral > 0 || bad > 0 ? (
+              <Statistics
+                good={good}
+                neutral={neutral}
+                bad={bad}
+                total={countTotalFeedback}
+                positivePercentage={countPositiveFeedbackPercentage}
+              />
+            ) : (
+              <Notification message="No feedback given" />
+            )}
+          </Section>
         </Section>
       </div>
     );
